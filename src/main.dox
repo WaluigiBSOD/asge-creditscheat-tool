@@ -1,0 +1,108 @@
+/// \mainpage Main Page
+///
+/// \tableofcontents
+///
+/// \section introduction Introduction
+///
+/// While doing the usual adminitrative tasks on [TCRF](https://tcrf.net/), in mid-May 2022, a page in particular captured my attention.
+/// It was a Notes page detailing the algorithm behind [the Genesis Alien Storm's credit select cheat](https://tcrf.net/Alien_Storm_(Genesis)#Credits_Select), and as it didn't examine it deeply, decided to do it in some extent with a C++ program.
+///
+/// This program computes:
+/// - a [rainbow table of the whole algorithm](#rainbow-table), only for internal use
+/// - [minimum solution lengths](#minimum-lengths), regardless of the starting internal state, only for internal use
+/// - algorithm's prune tables, used to explain some [algorithm's properties](#solution-properties)
+/// - all the [solutions of minimum size](#solutions), and their number
+///
+/// \section algorithm The Algorithm
+///
+/// A disassembly of the algorithm can be found on [its Notes page](https://tcrf.net/Notes:Alien_Storm_(Genesis)#Credits_Select).
+/// Essentially, considering only the cheat computation logic, it does:
+/// 1. Initialize a 16-bit memory location to \c 0x0000
+/// 2. XOR it with the current pressed button's code in memory if any (any button except **Start** is allowed)  
+/// 3. Replace its content with a unitary right bit-shift of itself
+/// 4. If before doing step #3 its least significant bit was set, XOR it with \c 0x8810
+/// 5. Repeat from step #2 until its value is equal to \c 0x3929
+///
+/// \subsection safe-solutions Safe Solutions
+///
+/// A valid solution consists in a button sequence that involves pressing **Up**, **Down**, **Left**, **Right**, **C**, **A**, **B** done using a standard controller. Ones that contain the **Left** and **Right** buttons may accidentally remap buttons in the Options menu, leading to a failed cheat.
+/// Sequences that don't involve pressing the **Left** or **Right** buttons are *safe*, and are called as such inside the program's code and there too.
+///
+/// \section rainbow-table Rainbow Table
+///
+/// The very first thing this program does is caching the algorithm inside a rainbow table in RAM, done inside ComputeRainbowTable.cpp, to avoid stressing the CPU by doing repetititve computations.
+///
+/// It's not stored inside a file, as it's needed only internally by the program.
+///
+/// \section minimum-lengths Minimum Solution Lengths
+///
+/// After having computed the rainbow table, the next step is to compute minimum solution lengths regardless of the starting internal state value (but still depending on the final one).
+///
+/// Are computed by an iterative approach, inside ComputeMinimumSolutionLengths.cpp, for every possible starting value that the internal state can have.
+///
+/// Due to the algorithm's nature, these lengths can be used to
+/// - determine the [shortest button sequence length](#shortest-sequence-length) that yields to a successful cheat
+/// - optimize the recursive search of them, by [pruning internal state values](#search-pruning) that yield to a solution with more than what's being looked into
+/// - find an explanation of [some properties of the minimum length solutions](#solution-properties)
+///
+/// Are not stored inside a file, as are needed only internally by the program.
+///
+/// \subsection shortest-sequence-length Shortest Button Sequence Length
+///
+/// For an initializer of \c 0x0000, the shortest button sequence that yields to a successful cheat is 9, as was already known.
+/// So, the program will find all the valid solutions of this length.
+///
+/// \section solutions Computing Solutions
+///
+/// After everything is ready, the program computes all the solutions of length 9 in ComputeSolutions.cpp and saves them inside a CSV file.
+/// Safe ones are stored into a separate file from the one containig all of them.
+///
+/// The total number of length 9 ones is just *1724* (**only 0.00022055% of all the possible button combinations of length 9**), where the safe ones are *just 89* (**only 5.16241% of the all the solutions of length 9**).
+///
+/// \subsection search-pruning Recursive Search Pruning
+///
+/// Minimum solution lengths can be used to prune the solution search algorithm by skipping all the branches that yield to a solution with a longer minimum length that what is left to compute.
+/// For example, if at a certain depth an internal state with a minimum solution length of 12 is encountered and only 8 inputs are left, there is no need to branch to it recursively as can be determined in advance that will not lead to any solution for needing more inputs than what is left.
+///
+/// On searching for solutions of length 9, this pruning technique reduces the algorithm's maximum number of iterations from *47079207* to *just 23128* (approximately **only the 0.05% of the former**).
+///
+/// Such tables are saved inside CSV files before computing minimum length solutions, one for all solutions and another for only safe ones, from ComputePruneTables.cpp.
+///
+/// \subsection solution-properties Minimum Length Solutions' Properties
+///
+/// For an internal state initializer of \c 0x0000, solutions of minimum length have some interesting properties that can be explained by knowing the minimum solution length that is yielded by some branches.
+/// - All the solutions of length 9 begin with **Up**.
+///
+///   For an internal state of \c 0x0000, a solution length of 9 and no input before, the following prune table can be created:
+///   Initial State	   | Button Pressed | Resulting State    | Cached Remaining Depth | Actual Remaining Depth | Decision
+///   :---------------:|:--------------:|:------------------:|:----------------------:|:----------------------:|:----------:
+///   \c 0x0000        | Up             | \c 0x8810          | 8                      | 8                      | \c OK
+///   \c 0x0000        | Down           | \c 0x0001          | 10                     | 8                      | \c PRUNED
+///   \c 0x0000        | Left           | \c 0x0002          | 10                     | 8                      | \c PRUNED
+///   \c 0x0000        | Right          | \c 0x0004          | 10                     | 8                      | \c PRUNED
+///   \c 0x0000        | C              | \c 0x0008          | 10                     | 8                      | \c PRUNED
+///   \c 0x0000        | A              | \c 0x0010          | 10                     | 8                      | \c PRUNED
+///   \c 0x0000        | B              | \c 0x0020          | 10                     | 8                      | \c PRUNED
+///   Having a solution that begins with something else than **Up** means having a minimum length of 11 (cached remaining depth + 1 input already considered), thus being incompatible with solutions of length 9.
+///
+/// - All the solutions of length 9 cannot have **Up** as the second button to press.
+///
+///   For an internal state of 0x8810, a solution length of 9 and an **Up** input before, the following prune table can be created:
+///   Initial State	   | Button Pressed | Resulting State    | Cached Remaining Depth | Actual Remaining Depth | Decision
+///   :---------------:|:--------------:|:------------------:|:----------------------:|:----------------------:|:----------:
+///   \c 0x8810        | Up             | \c 0xCC18          | 11                     | 7                      | \c PRUNED
+///   \c 0x8810        | Down           | \c 0x4409          | 7                      | 7                      | \c OK
+///   \c 0x8810        | Left           | \c 0x440A          | 7                      | 7                      | \c OK
+///   \c 0x8810        | Right          | \c 0x440C          | 7                      | 7                      | \c OK
+///   \c 0x8810        | C              | \c 0x4400          | 7                      | 7                      | \c OK
+///   \c 0x8810        | A              | \c 0x4418          | 7                      | 7                      | \c OK
+///   \c 0x8810        | B              | \c 0x4428          | 7                      | 7                      | \c OK
+///   Having a solution that begins with an **Up**, **Up** pattern means having a minimum length of 13 (cached remaining depth + 2 inputs already considered), thus being incompatible with solutions of length 9.
+///
+/// \section conclusions Conclusions
+///
+/// Well, I have to say that this program was fun to write, also because I terribly like analyzing algorithms of various kind.
+/// I believe some parts should have been more detailed, but looks enough.
+///
+/// \author WaluigiBSOD
+/// \date May 31st, 2022
