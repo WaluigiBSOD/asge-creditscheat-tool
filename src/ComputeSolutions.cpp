@@ -34,7 +34,7 @@ fstream SolutionsFileCSV;
 /// The main logic behing computing all the solutions of a certain minimum length.
 ///
 /// Search is pruned using the result of ComputeMinimumSolutionLengths.cpp.
-/// Solutions found are also saved inside a CSV file, I/O errors are silently ignored.
+/// Solutions found are also saved inside a CSV file, I/O errors are silently ignored, for now.
 ///
 /// @param[in] OnlySafeSolutions     If **true**, solutions with left/right button presses are discarded, if **false** nothing happens.
 /// @param[in] InternalState         The starting internal state.
@@ -51,7 +51,23 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
     if (CurrentRecursiveDepth < MaximumRecursiveDepth) {
         unsigned short RecursiveInternalState;
 
-        for (unsigned int i=0;i<7;i++) {
+        unsigned int i;
+
+        // CSV File (header)
+        //
+        // Any I/O problem will be just ignored, for now.
+
+        if (CurrentRecursiveDepth == 0 && SolutionsFileCSV.good())
+            for (i=0;i<MaximumRecursiveDepth;i++) {
+                SolutionsFileCSV << "Button #" << (i + 1);
+
+                if ((i + 1) < MaximumRecursiveDepth)
+                    SolutionsFileCSV << SeparatorCSV;
+                else
+                    SolutionsFileCSV << endl;
+            }
+
+        for (i=0;i<7;i++) {
             // Skips all the unsafe solutions (ones with Left/Right), if specified.
 
             if (OnlySafeSolutions && (ButtonCodes[i] == 0x04 || ButtonCodes[i] == 0x08))
@@ -61,16 +77,16 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
 
             SolutionBuffer[CurrentRecursiveDepth] = i;
 
-            // CSV File
+            // CSV File (content)
             //
-            // Any I/O problem will be just ignored.
+            // Any I/O problem will be just ignored, for now.
 
             if (RecursiveInternalState == InternalStateTargetValue && SolutionsFileCSV.good()) {
                 for (unsigned int j=0;j<MinimumSolutionLength[InternalStateInitialValue];j++) {
                     SolutionsFileCSV << ButtonNames[SolutionBuffer[j]];
 
                     if (j + 1 < MinimumSolutionLength[InternalStateInitialValue])
-                        SolutionsFileCSV << ';';
+                        SolutionsFileCSV << SeparatorCSV;
                 }
 
                 SolutionsFileCSV << endl;
@@ -79,7 +95,7 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
 
             // Pruning
             //
-            // As it's referred to the minimum solution length*after an input*, the value of MinimumSolutionLength[RecursiveInternalState] has to be incremented by one.
+            // As it's referred to the minimum solution length *after an input*, the value of MinimumSolutionLength[RecursiveInternalState] has to be incremented by one.
 
             if (RecursiveInternalState == InternalStateTargetValue)
                 retNUMBER++;
@@ -95,7 +111,7 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
 
 /// This function computes all the solution of a certain minimum length.
 ///
-/// Solutions found are also saved inside a CSV file, I/O errors are silently ignored.
+/// Solutions found are also saved inside a CSV file, I/O errors are silently ignored, for now.
 ///
 /// @param[in] OnlySafeSolutions If **true**, solutions with left/right button presses are discarded, if **false** nothing happens. main() invokes this function twice, once with this parameter as **false**, once as **true**.
 ///

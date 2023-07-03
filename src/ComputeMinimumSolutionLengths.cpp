@@ -25,7 +25,7 @@
 
 #include "Constants.h"
 
-/// This is the main logic behind the method that computes all the minimum solution lenghts.
+/// This is the main logic behind the method that computes all the minimum solution lengths.
 ///
 /// @param[in] InternalState       The starting internal state.
 /// @param[in] TargetInternalState The internal state to obtain by altering the *InternalState* variable, through button presses.
@@ -47,9 +47,9 @@ bool _FindMinimumSolutionLength(unsigned short InternalState, unsigned short Tar
     return false;
 }
 
-/// This method computes all the minimum solution lenghts.
+/// This method computes all the minimum solution lengths.
 ///
-/// It's done in various steps, iteratively with no lengthy recursive searches.
+/// It's done in various steps iteratively with no lengthy recursive searches.
 ///
 /// @author    WaluigiBSOD
 /// @copyright GPL-3.0 license
@@ -84,7 +84,8 @@ void _ComputeMinimumSolutionLengths() {
                     //
                     // Solutions of length > 1 are computed by finding solutions of length n - 1 and extending them by 1.
                     // Simple as that.
-                    // If a solution requires n steps, there always exist solutions of length n - 1, n - 2 and so on derived from it.
+                    //
+                    // If a solution requires n steps, there always exist solutions of length n - 1, n - 2 and so on derived from it by starting from an intermediate value.
 
                     for (j=0;j<0x10000;j++)
                         if (MinimumSolutionLength[j] == SolutionSize && _FindMinimumSolutionLength(i,j)) {

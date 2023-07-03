@@ -44,18 +44,20 @@
 /// @author    WaluigiBSOD
 /// @copyright GPL-3.0 license
 void _InitializeAllThatNeedsToBeInitialized() {
+    unsigned int i;
+
     // Rainbow Table
 
     RainbowTable = new unsigned short*[7];
 
-    for (unsigned int i=0;i<7;i++)
+    for (i=0;i<7;i++)
         RainbowTable[i] = new unsigned short[0x10000];
 
     // Minimum Solution Length
 
     MinimumSolutionLength = new unsigned short[0x10000];
 
-    for (unsigned int i=0;i<0x10000;i++)
+    for (i=0;i<0x10000;i++)
         MinimumSolutionLength[i] = 0;
 }
 
@@ -106,11 +108,11 @@ int main() {
 
     _ComputeRainbowTable();
 
-    cout << "Done!" << endl << endl;
+    cout << "Done!" << endl;
 
     // Minimum solution lengths computation.
 
-    cout << "Caching minimum solution lenghts (may take some minutes) ... ";
+    cout << "Caching minimum solution lengths (may take a minute or two) ... ";
 
     _ComputeMinimumSolutionLengths();
 
@@ -120,7 +122,12 @@ int main() {
 
     cout << " ### Prune Tables ###" << endl << endl;
 
-    cout << "Computing prune tables ... ";
+    cout << "Computing prune tables ";
+
+    if ((InternalStateInitialValue != 0x0000) || (InternalStateTargetValue != 0x3929))
+        cout << "(may take a bit longer than usual for non-standard intial/target values) ";
+
+    cout << "... ";
 
     _ComputePruneTables(false);
     _ComputePruneTables(true);
@@ -135,12 +142,28 @@ int main() {
 
     cout << hex;
 
-    cout << "Chosen starting point is 0x" << setw(4) << setfill('0') << InternalStateInitialValue << endl;
-    cout << "Chosen target point is   0x" << setw(4) << setfill('0') << InternalStateTargetValue << endl << endl;
+    cout << uppercase;
+
+    cout << "Chosen starting point is 0x" << setw(4) << setfill('0') << InternalStateInitialValue;
+
+    if (InternalStateInitialValue != 0x0000)
+        cout << " (game default is 0x0000)";
+
+    cout << endl;
+
+    cout << "Chosen target point is   0x" << setw(4) << setfill('0') << InternalStateTargetValue;
+
+    if (InternalStateTargetValue != 0x3929)
+        cout << " (game default is 0x3929)";
+
+    cout << endl << endl;
 
     cout << dec;
 
-    cout << "A solution of minimum length is " << MinimumSolutionLength[InternalStateInitialValue] << " input(s) long, computing all solutions of this length." << endl << endl;
+    if (MinimumSolutionLength[InternalStateInitialValue] == 1)
+        cout << "A solution of minimum length is " << MinimumSolutionLength[InternalStateInitialValue] << " input long, computing all the solutions of this length." << endl << endl;
+    else
+        cout << "A solution of minimum length is " << MinimumSolutionLength[InternalStateInitialValue] << " inputs long, computing all the solutions of this length." << endl << endl;
 
     cout << "Computing solutions ... ";
 
@@ -149,11 +172,9 @@ int main() {
 
     cout << "Done!" << endl << endl;
 
-    cout << "Total number of solutions:" << endl << endl;
+    cout << "All:  " << setw(5) << setfill(' ') << NumberOfAllSolutions << " (" << (((double)(NumberOfSafeSolutions) / (double)(pow(7,MinimumSolutionLength[InternalStateInitialValue]))) * (double)(100)) << "% of all the possible button combinations of length " << MinimumSolutionLength[InternalStateInitialValue] << ")" << endl;
 
-    cout << "All:  " << NumberOfAllSolutions << " (" << (((double)(NumberOfSafeSolutions) / (double)(pow(7,MinimumSolutionLength[InternalStateInitialValue]))) * (double)(100)) << "% of all the possible button combinations of length " << MinimumSolutionLength[InternalStateInitialValue] << ")" << endl << endl;
-
-    cout << "Safe: " << NumberOfSafeSolutions << "   (" << (((double)(NumberOfSafeSolutions) / (double)(NumberOfAllSolutions)) * (double)(100)) << "% of the all the solutions)" << endl << endl;
+    cout << "Safe: " << setw(5) << setfill(' ') << NumberOfSafeSolutions << " (" << (((double)(NumberOfSafeSolutions) / (double)(NumberOfAllSolutions)) * (double)(100)) << "% of all the solutions of length " << MinimumSolutionLength[InternalStateInitialValue] << ")" << endl << endl;
 
     cout << "A listing of them has been saved inside \"" << FileNameAllSolutionsCSV << "\" and \"" << FileNameSafeSolutionsCSV << "\", respectively." << endl;
 

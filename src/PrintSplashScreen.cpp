@@ -41,11 +41,13 @@ using namespace std;
 string _CenterString(string ToCenter = "", bool PrintBorder = true) {
     string retSTRING = "";
 
+    unsigned int i;
+
     if (ToCenter == "" || ToCenter.size() > SplashScreenWidth) {
-        for (unsigned int i=0;i<SplashScreenSpacingLeft;i++)
+        for (i=0;i<SplashScreenSpacingLeft;i++)
             retSTRING += ' ';
 
-        for (unsigned int i=0;i<SplashScreenWidth;i++)
+        for (i=0;i<SplashScreenWidth;i++)
             if (i == 0 || (i + 1) == SplashScreenWidth)
                 retSTRING += '+';
             else
@@ -53,7 +55,7 @@ string _CenterString(string ToCenter = "", bool PrintBorder = true) {
     } else {
         unsigned int TotalSpacing = (SplashScreenWidth - ToCenter.size()) / 2;
 
-        for (unsigned int i=0;i<TotalSpacing + SplashScreenSpacingLeft;i++)
+        for (i=0;i<TotalSpacing + SplashScreenSpacingLeft;i++)
             if (i == SplashScreenSpacingLeft && PrintBorder)
                 retSTRING += '|';
             else
@@ -61,7 +63,7 @@ string _CenterString(string ToCenter = "", bool PrintBorder = true) {
 
         retSTRING += ToCenter;
 
-        for (unsigned int i=0;(i + 1)<TotalSpacing + (ToCenter.size() % 2);i++)
+        for (i=0;(i + 1)<TotalSpacing + (ToCenter.size() % 2);i++)
             retSTRING +=  ' ';
 
         if (PrintBorder)

@@ -67,3 +67,7 @@ extern const string FileNameSafeSolutionsCSV;
 
 extern const string FileNameAllSolutionsPruneTablesCSV;
 extern const string FileNameSafeSolutionsPruneTablesCSV;
+
+// CSV Separator
+
+extern const char SeparatorCSV;

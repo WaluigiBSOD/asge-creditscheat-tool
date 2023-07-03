@@ -34,9 +34,24 @@ unsigned short* PruneTableSolutionBuffer;
 
 fstream PruneTablesFileCSV;
 
-/// The main method that handles writing all the prune tables used inside ComputeSolutions.cpp inside a CSV file.
+/// The method that handles writing the header of all the prune tables used inside ComputeSolutions.cpp, inside a CSV file.
 ///
-/// I/O errors are silently ignored.
+/// I/O errors are silently ignored, for now.
+///
+/// @author    WaluigiBSOD
+/// @copyright GPL-3.0 license
+void _WritePruneTablesHeader() {
+    // CSV File (header)
+    //
+    // Any I/O problem will be just ignored, for now.
+
+    if (PruneTablesFileCSV.good())
+        PruneTablesFileCSV << "Initial State" << SeparatorCSV << "Button Pressed" << SeparatorCSV << "Resulting State" << SeparatorCSV << "Cached Remaining Depth" << SeparatorCSV << "Actual Remaining Depth" << SeparatorCSV << "Decision" << endl;
+}
+
+/// The method that handles writing all the content of all the prune tables used inside ComputeSolutions.cpp, inside a CSV file.
+///
+/// I/O errors are silently ignored, for now.
 ///
 /// @param[in] OnlySafeSolutions     If **true**, solutions with left/right button presses are discarded, if **false** nothing happens.
 /// @param[in] InternalState         The starting internal state.
@@ -45,7 +60,7 @@ fstream PruneTablesFileCSV;
 ///
 /// @author    WaluigiBSOD
 /// @copyright GPL-3.0 license
-void _WritePruneTable(bool OnlySafeSolutions, unsigned short InternalState, short CurrentRecursiveDepth, short MaximumRecursiveDepth) {
+void _WritePruneTablesContent(bool OnlySafeSolutions, unsigned short InternalState, short CurrentRecursiveDepth, short MaximumRecursiveDepth) {
     unsigned short TestSolution;
 
     int i;
@@ -57,8 +72,6 @@ void _WritePruneTable(bool OnlySafeSolutions, unsigned short InternalState, shor
             continue;
 
         if (MinimumSolutionLength[RainbowTable[i][InternalState]] + CurrentRecursiveDepth + 1 > MaximumRecursiveDepth && PruneTablesFileCSV.good()) {
-            PruneTablesFileCSV << "Initial State;Button Pressed;Resulting State;Cached Remaining Depth;Actual Remaining Depth;Decision" << endl;
-
             for (i=0;i<7;i++) {
                 // Skips all unsafe solutions (ones with Left/Right), if specified.
 
@@ -67,36 +80,42 @@ void _WritePruneTable(bool OnlySafeSolutions, unsigned short InternalState, shor
 
                 TestSolution = RainbowTable[i][InternalState];
 
-                PruneTablesFileCSV << hex << uppercase;
+                // CSV File (content)
+                //
+                // Any I/O problem will be just ignored, for now.
 
-                PruneTablesFileCSV << "0x" << setw(4) << setfill('0') << InternalState;
+                if (PruneTablesFileCSV.good()) {
+                    PruneTablesFileCSV << hex << uppercase;
 
-                PruneTablesFileCSV << ';';
+                    PruneTablesFileCSV << "0x" << setw(4) << setfill('0') << InternalState;
 
-                PruneTablesFileCSV << ButtonNames[i];
+                    PruneTablesFileCSV << SeparatorCSV;
 
-                PruneTablesFileCSV << ';';
+                    PruneTablesFileCSV << ButtonNames[i];
 
-                PruneTablesFileCSV << "0x" << setw(4) << setfill('0') << TestSolution;
+                    PruneTablesFileCSV << SeparatorCSV;
 
-                PruneTablesFileCSV << dec;
+                    PruneTablesFileCSV << "0x" << setw(4) << setfill('0') << TestSolution;
 
-                PruneTablesFileCSV << ';';
+                    PruneTablesFileCSV << dec;
 
-                PruneTablesFileCSV << MinimumSolutionLength[TestSolution];
+                    PruneTablesFileCSV << SeparatorCSV;
 
-                PruneTablesFileCSV << ';';
+                    PruneTablesFileCSV << MinimumSolutionLength[TestSolution];
 
-                PruneTablesFileCSV << (MaximumRecursiveDepth - CurrentRecursiveDepth - 1);
+                    PruneTablesFileCSV << SeparatorCSV;
 
-                PruneTablesFileCSV << ';';
+                    PruneTablesFileCSV << (MaximumRecursiveDepth - CurrentRecursiveDepth - 1);
 
-                if (MinimumSolutionLength[TestSolution] + CurrentRecursiveDepth + 1 > MaximumRecursiveDepth)
-                    PruneTablesFileCSV << "PRUNED";
-                else
-                    PruneTablesFileCSV << "OK";
+                    PruneTablesFileCSV << SeparatorCSV;
 
-                PruneTablesFileCSV << endl;
+                    if (MinimumSolutionLength[TestSolution] + CurrentRecursiveDepth + 1 > MaximumRecursiveDepth)
+                        PruneTablesFileCSV << "PRUNED";
+                    else
+                        PruneTablesFileCSV << "OK";
+
+                    PruneTablesFileCSV << endl;
+                }
             }
 
             break;
@@ -107,7 +126,7 @@ void _WritePruneTable(bool OnlySafeSolutions, unsigned short InternalState, shor
 /// The main logic behing computing all the all the prune tables used inside ComputeSolutions.cpp.
 ///
 /// Search is still pruned using the result of ComputeMinimumSolutionLengths.cpp.
-/// Tables are saved inside a CSV file, I/O errors are silently ignored.
+/// Tables are saved inside a CSV file, I/O errors are silently ignored, for now.
 ///
 /// @param[in] OnlySafeSolutions     If **true**, solutions with left/right button presses are discarded, if **false** nothing happens.
 /// @param[in] InternalState         The starting internal state.
@@ -120,7 +139,7 @@ void _FindPruneTables(bool OnlySafeSolutions, unsigned short InternalState, unsi
     if (CurrentRecursiveDepth < MaximumRecursiveDepth) {
         unsigned short RecursiveInternalState;
 
-        _WritePruneTable(OnlySafeSolutions,InternalState,CurrentRecursiveDepth,MaximumRecursiveDepth);
+        _WritePruneTablesContent(OnlySafeSolutions,InternalState,CurrentRecursiveDepth,MaximumRecursiveDepth);
 
         for (unsigned int i=0;i<7;i++) {
             // Skips all unsafe solutions (ones with Left/Right), if specified.
@@ -144,7 +163,7 @@ void _FindPruneTables(bool OnlySafeSolutions, unsigned short InternalState, unsi
 
 /// This method computes all the prune tables used inside ComputeSolutions.cpp to prune their recursive search.
 ///
-/// Are only saved inside a CSV file, I/O errors are silently ignored.
+/// Are only saved inside a CSV file, I/O errors are silently ignored, for now.
 ///
 /// @param[in] OnlySafeSolutions If **true**, solutions with left/right button presses are discarded, if **false** nothing happens. main() invokes this function twice, once with this parameter as **false**, once as **true**.
 ///
@@ -159,6 +178,8 @@ void _ComputePruneTables(bool OnlySafeSolutions) {
         PruneTablesFileCSV.open(FileNameSafeSolutionsPruneTablesCSV,ios::out | ios::trunc);
     else
         PruneTablesFileCSV.open(FileNameAllSolutionsPruneTablesCSV,ios::out | ios::trunc);
+
+    _WritePruneTablesHeader();
 
     _FindPruneTables(OnlySafeSolutions,InternalStateInitialValue,ConsideredMinimumSolutionLength);
 

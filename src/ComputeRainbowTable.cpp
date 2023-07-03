@@ -36,11 +36,11 @@ void _FillRainbowTable(unsigned short ButtonID, unsigned short StartingInternalS
     RainbowTable[ButtonID][StartingInternalState] = StartingInternalState ^ ButtonCodes[ButtonID];
 
     if (RainbowTable[ButtonID][StartingInternalState] & 0x1) {
-        RainbowTable[ButtonID][StartingInternalState] >>= 0x1;
+        RainbowTable[ButtonID][StartingInternalState] >>= 1;
 
         RainbowTable[ButtonID][StartingInternalState] ^= 0x8810;
     } else
-        RainbowTable[ButtonID][StartingInternalState] >>= 0x1;
+        RainbowTable[ButtonID][StartingInternalState] >>= 1;
 }
 
 /// This is the method for computing the algorithm's rainbow table.
@@ -50,7 +50,10 @@ void _FillRainbowTable(unsigned short ButtonID, unsigned short StartingInternalS
 /// @author    WaluigiBSOD
 /// @copyright GPL-3.0 license
 void _ComputeRainbowTable() {
-    for (unsigned int i=0;i<7;i++)
-        for (unsigned int j=0;j<0x10000;j++)
-            _FillRainbowTable(i & 0xFF, j & 0xFFFF);
+    unsigned int i;
+    unsigned int j;
+
+    for (i=0;i<7;i++)
+        for (j=0;j<0x10000;j++)
+            _FillRainbowTable(i & 0xFF,j & 0xFFFF);
 }

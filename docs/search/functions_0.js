@@ -12,5 +12,6 @@ var searchData=
   ['_5ffindsolutions_9',['_FindSolutions',['../_compute_solutions_8cpp.html#ade1dd97563c3f4252629e3de3e6932a6',1,'ComputeSolutions.cpp']]],
   ['_5finitializeallthatneedstobeinitialized_10',['_InitializeAllThatNeedsToBeInitialized',['../main_8cpp.html#a3c56ff0ab31dcf1d946cc2f190c0bb7f',1,'main.cpp']]],
   ['_5fprintsplashscreen_11',['_PrintSplashScreen',['../_print_splash_screen_8cpp.html#aa3a0a51e9aa3d80d0f243c5545274f3d',1,'_PrintSplashScreen():&#160;PrintSplashScreen.cpp'],['../_print_splash_screen_8h.html#aa3a0a51e9aa3d80d0f243c5545274f3d',1,'_PrintSplashScreen():&#160;PrintSplashScreen.cpp']]],
-  ['_5fwriteprunetable_12',['_WritePruneTable',['../_compute_prune_tables_8cpp.html#aa460cda865844882c0fa264f256682b6',1,'ComputePruneTables.cpp']]]
+  ['_5fwriteprunetablescontent_12',['_WritePruneTablesContent',['../_compute_prune_tables_8cpp.html#a57c15d48cbf49f916ba861a04351b63f',1,'ComputePruneTables.cpp']]],
+  ['_5fwriteprunetablesheader_13',['_WritePruneTablesHeader',['../_compute_prune_tables_8cpp.html#a0004519c9ebc603493277d04f274841d',1,'ComputePruneTables.cpp']]]
 ];

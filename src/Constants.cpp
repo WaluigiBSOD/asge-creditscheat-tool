@@ -31,7 +31,7 @@ using namespace std;
 
 extern const string ProgramName =                           "Alien Storm (Genesis) Credits Select Cheat Tool";
 
-extern const string ProgramVersion =                        "1.0";
+extern const string ProgramVersion =                        "1.1";
 
 // Splash Screen
 
@@ -48,29 +48,29 @@ unsigned short* MinimumSolutionLength;
 // Buttons
 
 extern const unsigned short ButtonCodes[7] = {
-    0x01,   // Up
-    0x02,   // Down
-    0x04,   // Left
-    0x08,   // Right
-    0x10,   // C
-    0x20,   // A
-    0x40    // B
+    0x01,       // Up
+    0x02,       // Down
+    0x04,       // Left
+    0x08,       // Right
+    0x10,       // C
+    0x20,       // A
+    0x40        // B
 };
 
 extern const string ButtonNames[7] = {
-    "Up",
-    "Down",
-    "Left",
-    "Right",
-    "C",
-    "A",
-    "B"
+    "Up",       // 0x01
+    "Down",     // 0x02
+    "Left",     // 0x04
+    "Right",    // 0x08
+    "C",        // 0x10
+    "A",        // 0x20
+    "B"         // 0x40
 };
 
 // Internal State
 
-extern const unsigned short InternalStateInitialValue =     0x0000;
-extern const unsigned short InternalStateTargetValue =      0x3929;
+extern const unsigned short InternalStateInitialValue =     0x0000; // Game default is 0x0000.
+extern const unsigned short InternalStateTargetValue =      0x3929; // Game default is 0x3929.
 
 // Compute Solutions
 
@@ -81,3 +81,7 @@ extern const string FileNameSafeSolutionsCSV =              "safe_solutions.csv"
 
 extern const string FileNameAllSolutionsPruneTablesCSV =    "all_solutions_prune.csv";
 extern const string FileNameSafeSolutionsPruneTablesCSV =   "safe_solutions_prune.csv";
+
+// CSV Separator
+
+extern const char SeparatorCSV =                            ',';
