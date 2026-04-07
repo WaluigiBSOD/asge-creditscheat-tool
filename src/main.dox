@@ -2,9 +2,11 @@
 ///
 /// \tableofcontents
 ///
+/// If you are looking for the program's source code repository it can be found [here](https://github.com/WaluigiBSOD/asge-creditscheat-tool).
+///
 /// \section introduction Introduction
 ///
-/// While doing the usual adminitrative tasks on [TCRF](https://tcrf.net/), in mid-May 2022, a page in particular captured my attention.
+/// While doing the usual administrative tasks on [TCRF](https://tcrf.net/), in mid-May 2022, a page in particular captured my attention.
 /// It was a Notes page detailing the algorithm behind [the Genesis Alien Storm's credit select cheat](https://tcrf.net/Alien_Storm_(Genesis)#Credits_Select), and as it didn't examine it deeply, decided to do it in some extent with a C++ program.
 ///
 /// This program computes:
@@ -30,7 +32,7 @@
 ///
 /// \section rainbow-table Rainbow Table
 ///
-/// The very first thing this program does is caching the algorithm inside a rainbow table in RAM, done inside ComputeRainbowTable.cpp, to avoid stressing the CPU by doing repetititve computations.
+/// The very first thing this program does is caching the algorithm inside a rainbow table in RAM, done inside ComputeRainbowTable.cpp, to avoid stressing the CPU by doing repetitive computations.
 ///
 /// It's not stored inside a file, as it's needed only internally by the program.
 ///
@@ -55,7 +57,7 @@
 /// \section solutions Computing Solutions
 ///
 /// After everything is ready, the program computes all the solutions of length 9 in ComputeSolutions.cpp and saves them inside a CSV file.
-/// Safe ones are stored into a separate file from the one containig all of them.
+/// Safe ones are stored into a separate file from the one containing all of them.
 ///
 /// The total number of length 9 ones is just *1724* (**only 0.00022055% of all the possible button combinations of length 9**), where the safe ones are *just 89* (**only 5.16241% of the all the solutions of length 9**).
 ///

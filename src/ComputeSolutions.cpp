@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file ComputeSolutions.cpp
+/// @file      ComputeSolutions.cpp
 ///
-/// @brief Functions for computing all the solutions of a certain minimum length, for a certain initial internal state.
+/// @brief     Functions for computing all the solutions of a certain minimum length, for a certain initial internal state.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #include <fstream>
 
@@ -31,33 +31,32 @@ unsigned short* SolutionBuffer;
 
 fstream SolutionsFileCSV;
 
-/// The main logic behing computing all the solutions of a certain minimum length.
+/// The main logic behind computing all the solutions of a certain minimum length.
 ///
 /// Search is pruned using the result of ComputeMinimumSolutionLengths.cpp.
-/// Solutions found are also saved inside a CSV file, I/O errors are silently ignored, for now.
+/// Solutions found are also saved inside a CSV file.
 ///
 /// @param[in] OnlySafeSolutions     If **true**, solutions with left/right button presses are discarded, if **false** nothing happens.
 /// @param[in] InternalState         The starting internal state.
 /// @param[in] MaximumRecursiveDepth The maximum recursive depth allowed to be reached. It's equal to the minimum solution length considered by _ComputeSolutions().
 /// @param[in] CurrentRecursiveDepth The current recursive depth. It's automatically set to zero in the function's declaration.
 ///
-/// @return The number of solutions found.
+/// @return    The number of solutions found, -1 if a file write error occurred.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
-unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short InternalState, unsigned short MaximumRecursiveDepth, unsigned short CurrentRecursiveDepth = 0) {
+/// @copyright GPL-3.0 License
+
+long long _FindSolutions(bool OnlySafeSolutions, unsigned short InternalState, unsigned short MaximumRecursiveDepth, unsigned short CurrentRecursiveDepth = 0) {
     unsigned long long retNUMBER = 0;
 
     if (CurrentRecursiveDepth < MaximumRecursiveDepth) {
         unsigned short RecursiveInternalState;
 
-        unsigned int i;
+        unsigned short i;
 
         // CSV File (header)
-        //
-        // Any I/O problem will be just ignored, for now.
 
-        if (CurrentRecursiveDepth == 0 && SolutionsFileCSV.good())
+        if (CurrentRecursiveDepth == 0)
             for (i=0;i<MaximumRecursiveDepth;i++) {
                 SolutionsFileCSV << "Button #" << (i + 1);
 
@@ -65,6 +64,9 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
                     SolutionsFileCSV << SeparatorCSV;
                 else
                     SolutionsFileCSV << endl;
+
+                if (SolutionsFileCSV.fail())
+                    return -1;
             }
 
         for (i=0;i<7;i++) {
@@ -78,8 +80,6 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
             SolutionBuffer[CurrentRecursiveDepth] = i;
 
             // CSV File (content)
-            //
-            // Any I/O problem will be just ignored, for now.
 
             if (RecursiveInternalState == InternalStateTargetValue && SolutionsFileCSV.good()) {
                 for (unsigned int j=0;j<MinimumSolutionLength[InternalStateInitialValue];j++) {
@@ -87,9 +87,15 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
 
                     if (j + 1 < MinimumSolutionLength[InternalStateInitialValue])
                         SolutionsFileCSV << SeparatorCSV;
+
+                    if (SolutionsFileCSV.fail())
+                        return -1;
                 }
 
                 SolutionsFileCSV << endl;
+
+                if (SolutionsFileCSV.fail())
+                    return -1;
             }
 
 
@@ -111,31 +117,41 @@ unsigned long long _FindSolutions(bool OnlySafeSolutions, unsigned short Interna
 
 /// This function computes all the solution of a certain minimum length.
 ///
-/// Solutions found are also saved inside a CSV file, I/O errors are silently ignored, for now.
+/// Solutions found are also saved inside a CSV file.
 ///
 /// @param[in] OnlySafeSolutions If **true**, solutions with left/right button presses are discarded, if **false** nothing happens. main() invokes this function twice, once with this parameter as **false**, once as **true**.
 ///
-/// @return The number of solutions found.
+/// @return    The number of solutions found, -1 if a file write or memory allocation error occurred.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
-unsigned long long _ComputeSolutions(bool OnlySafeSolutions) {
+/// @copyright GPL-3.0 License
+
+long long _ComputeSolutions(bool OnlySafeSolutions) {
+    long long retNUMBER;
+
     const unsigned short ConsideredMinimumSolutionLength = MinimumSolutionLength[InternalStateInitialValue];
 
     SolutionBuffer = new unsigned short[ConsideredMinimumSolutionLength];
 
-    // Any file opening problem makes only the function that computes ignore it, the program will not be halted.
+    if (SolutionBuffer == nullptr)
+        return -1;
 
     if (OnlySafeSolutions)
         SolutionsFileCSV.open(FileNameSafeSolutionsCSV,ios::out | ios::trunc);
     else
         SolutionsFileCSV.open(FileNameAllSolutionsCSV,ios::out | ios::trunc);
 
-    unsigned long long retNUMBER = _FindSolutions(OnlySafeSolutions,InternalStateInitialValue,ConsideredMinimumSolutionLength);
+    if (SolutionsFileCSV.is_open()) {
+        retNUMBER = _FindSolutions(OnlySafeSolutions,InternalStateInitialValue,ConsideredMinimumSolutionLength);
+
+        SolutionsFileCSV.close();
+    } else {
+        delete[] SolutionBuffer;
+
+        return -1;
+    }
 
     delete[] SolutionBuffer;
-
-    SolutionsFileCSV.close();
 
     return retNUMBER;
 }

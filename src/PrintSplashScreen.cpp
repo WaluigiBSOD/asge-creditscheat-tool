@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file PrintSplashScreen.cpp
+/// @file      PrintSplashScreen.cpp
 ///
-/// @brief Functions for displaying the initial splash screen.
+/// @brief     Functions for displaying the initial splash screen.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #include <iostream>
 
@@ -34,10 +34,11 @@ using namespace std;
 /// @param[in] ToCenter    The string to center. If empty or being a blank space, prints only a border and nothing else.
 /// @param[in] PrintBorder Prints a border around it by default or if set to **true**, none if set to **false**.
 ///
-/// @return If *ToCenter* is not blank or a space, *ToCenter*, but centered. Otherwise prints only a border.
+/// @return    If *ToCenter* is not blank or a space, *ToCenter*, but centered. Otherwise prints only a border.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 string _CenterString(string ToCenter = "", bool PrintBorder = true) {
     string retSTRING = "";
 
@@ -78,7 +79,8 @@ string _CenterString(string ToCenter = "", bool PrintBorder = true) {
 /// This method prints the splash screen at the very beginning of the program's execution.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 void _PrintSplashScreen() {
     cout << _CenterString();
 
@@ -91,6 +93,16 @@ void _PrintSplashScreen() {
     cout << _CenterString(" ");
 
     cout << _CenterString("Copyright (C) 2022-present WaluigiBSOD (waluigibsod.github.io)");
+
+    cout << _CenterString();
+
+    cout << _CenterString("This program comes with ABSOLUTELY NO WARRANTY.");
+
+    cout << _CenterString("This is free software, and you are welcome to redistribute it");
+
+    cout << _CenterString("under certain conditions.");
+
+    cout << _CenterString("See the GNU General Public License v3.0 for more details.");
 
     cout << _CenterString();
 

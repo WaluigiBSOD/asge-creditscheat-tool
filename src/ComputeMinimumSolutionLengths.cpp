@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file ComputeMinimumSolutionLengths.cpp
+/// @file      ComputeMinimumSolutionLengths.cpp
 ///
-/// @brief Functions for computing minimum solution lengths, regardless of the initial internal state.
+/// @brief     Functions for computing minimum solution lengths, regardless of the initial internal state.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #include "Constants.h"
 
@@ -30,14 +30,15 @@
 /// @param[in] InternalState       The starting internal state.
 /// @param[in] TargetInternalState The internal state to obtain by altering the *InternalState* variable, through button presses.
 ///
-/// @return **True** if a button out of all the possible seven yields *TargetInternalState* by having *InternalState* as an input, **false** otherwise.
+/// @return    **True** if a button out of all the possible seven yields *TargetInternalState* by having *InternalState* as an input, **false** otherwise.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 bool _FindMinimumSolutionLength(unsigned short InternalState, unsigned short TargetInternalState) {
     unsigned short TestInternalState;
 
-    for (unsigned int i=0;i<7;i++) {
+    for (unsigned char i=0;i<7;i++) {
         TestInternalState = RainbowTable[i][InternalState];
 
         if (TestInternalState == TargetInternalState)
@@ -52,13 +53,15 @@ bool _FindMinimumSolutionLength(unsigned short InternalState, unsigned short Tar
 /// It's done in various steps iteratively with no lengthy recursive searches.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 void _ComputeMinimumSolutionLengths() {
     unsigned short SolutionSize = 0;
 
     bool AtLeastSomethingWasComputed;
 
-    unsigned int i,j;
+    unsigned int i;
+    unsigned int j;
 
     do {
         // Step #1 - Computing all the solutions of a certain size at the same time, to maximize caching effectiveness.

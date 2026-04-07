@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file ComputeRainbowTable.h
+/// @file      ComputeRainbowTable.h
 ///
-/// @brief ComputeRainbowTable.cpp's header file.
+/// @brief     ComputeRainbowTable.cpp's header file.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #pragma once
 

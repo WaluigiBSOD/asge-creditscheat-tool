@@ -16,13 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file ComputeSolutions.h
+/// @file      ComputeSolutions.h
 ///
-/// @brief ComputeSolutions.cpp's header file.
+/// @brief     ComputeSolutions.cpp's header file.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #pragma once
 
-unsigned long long _ComputeSolutions(bool OnlySafeSolutions);
+long long _ComputeSolutions(bool OnlySafeSolutions);

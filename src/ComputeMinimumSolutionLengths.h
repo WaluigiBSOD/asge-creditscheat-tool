@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file ComputeMinimumSolutionLengths.h
+/// @file      ComputeMinimumSolutionLengths.h
 ///
-/// @brief ComputeMinimumSolutionLengths.cpp's header file.
+/// @brief     ComputeMinimumSolutionLengths.cpp's header file.
 ///
-/// @author WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @author    WaluigiBSOD
+/// @copyright GPL-3.0 License
 
 #pragma once
 

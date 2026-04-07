@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file PrintSplashScreen.h
+/// @file      PrintSplashScreen.h
 ///
-/// @brief PrintSplashScreen.cpp's header file.
+/// @brief     PrintSplashScreen.cpp's header file.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #pragma once
 

@@ -16,14 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file Constants.cpp
+/// @file      Constants.cpp
 ///
-/// @brief Constants file. All the program's constant are defined in this file.
+/// @brief     Constants file. All the program's constant are defined in this file.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
-#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -31,13 +31,13 @@ using namespace std;
 
 extern const string ProgramName =                           "Alien Storm (Genesis) Credits Select Cheat Tool";
 
-extern const string ProgramVersion =                        "1.1";
+extern const string ProgramVersion =                        "1.2";
 
 // Splash Screen
 
-extern const unsigned int SplashScreenSpacingLeft =         1;
+extern const unsigned char SplashScreenSpacingLeft =        1;
 
-extern const unsigned int SplashScreenWidth =               64;
+extern const unsigned char SplashScreenWidth =              64;
 
 // Rainbow Tables
 
@@ -72,16 +72,26 @@ extern const string ButtonNames[7] = {
 extern const unsigned short InternalStateInitialValue =     0x0000; // Game default is 0x0000.
 extern const unsigned short InternalStateTargetValue =      0x3929; // Game default is 0x3929.
 
-// Compute Solutions
-
-extern const string FileNameAllSolutionsCSV =               "all_solutions.csv";
-extern const string FileNameSafeSolutionsCSV =              "safe_solutions.csv";
-
 // Prune Tables
 
 extern const string FileNameAllSolutionsPruneTablesCSV =    "all_solutions_prune.csv";
 extern const string FileNameSafeSolutionsPruneTablesCSV =   "safe_solutions_prune.csv";
 
+// Compute Solutions
+
+extern const string FileNameAllSolutionsCSV =               "all_solutions.csv";
+extern const string FileNameSafeSolutionsCSV =              "safe_solutions.csv";
+
 // CSV Separator
 
 extern const char SeparatorCSV =                            ',';
+
+// Exit Codes
+
+extern const char RainbowTableMemoryAllocationError =       1;
+
+extern const char FileErrorAllSolutionsPruneTablesCSV =     2;
+extern const char FileErrorSafeSolutionsPruneTablesCSV =    3;
+
+extern const char FileErrorAllSolutionsCSV =                4;
+extern const char FileErrorSafeSolutionsCSV =               5;

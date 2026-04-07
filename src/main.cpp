@@ -16,14 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file main.cpp
+/// @file      main.cpp
 ///
-/// @brief Main program file.
+/// @brief     Main program file.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #include <cmath>
+#include <iostream>
 #include <iomanip>
 
 #include "Constants.h"
@@ -35,42 +36,67 @@
 #include "ComputeMinimumSolutionLengths.h"
 #include "ComputeSolutions.h"
 
-/// This method allocates all the arrays that are put inside the heap.
+/// Allocates all the arrays that are put inside the heap.
 ///
 /// It's done to avoid memory allocation issues, as in total they weight 64 KB.
 /// May sound exaggerate, but usually default stack sizes are limited to a few megabytes.
-/// Also, this is approximately 420.1025641 times the RAM that is needed for the internal state of a MT19937 PRNG algorithm instance, as a comparison.
+/// Also, this is approximately 420 times the RAM that is needed for the internal state of a MT19937 PRNG algorithm instance, as a comparison.
+///
+/// @return    **True** if all memory needed is allocated and initialized succesfully, **false** otherwise.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
-void _InitializeAllThatNeedsToBeInitialized() {
-    unsigned int i;
+/// @copyright GPL-3.0 License
+
+bool _InitializeAllThatNeedsToBeInitialized() {
+    int i;
 
     // Rainbow Table
 
     RainbowTable = new unsigned short*[7];
 
-    for (i=0;i<7;i++)
+    if (RainbowTable == nullptr)
+        return false;
+
+    for (i=0;i<7;i++) {
         RainbowTable[i] = new unsigned short[0x10000];
+
+        if (RainbowTable[i] == nullptr) {
+            i--;
+
+            while (i > -1) {
+                delete[] RainbowTable[i];
+
+                i--;
+            }
+
+            return false;
+        }
+    }
 
     // Minimum Solution Length
 
     MinimumSolutionLength = new unsigned short[0x10000];
 
+    if (MinimumSolutionLength == nullptr)
+        return false;
+
     for (i=0;i<0x10000;i++)
         MinimumSolutionLength[i] = 0;
+
+    return true;
 }
 
-/// This method deallocates all the arrays that are put inside the heap.
+/// Deallocates all the arrays that are put inside the heap.
 ///
 /// It's called at the end of the program, just before exiting.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 void _DeallocateAllThatNeedsToBeDeallocated() {
     // Rainbow Table
 
-    for (unsigned int i=0;i<0x7;i++)
+    for (unsigned char i=0;i<0x7;i++)
         delete[] RainbowTable[i];
 
     delete[] RainbowTable;
@@ -84,103 +110,147 @@ void _DeallocateAllThatNeedsToBeDeallocated() {
 ///
 /// Handles all the console output, calling functions and memory allocation/initializing/deallocation.
 ///
+/// @return    The program's exit code (0 if everything was OK, different if otherwise).
+///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 int main() {
     // Splash Screen
 
     _PrintSplashScreen();
 
-    // Memory allocation and initialization.
+    // Memory allocation and initialization
 
-    _InitializeAllThatNeedsToBeInitialized();
+    if (_InitializeAllThatNeedsToBeInitialized()) {
+        long long NumberOfAllSolutions;
+        long long NumberOfSafeSolutions;
 
-    unsigned long long NumberOfAllSolutions;
-    unsigned long long NumberOfSafeSolutions;
+        // Caching
 
-    // Caching
+        cout << " ### Caching ###" << endl << endl;
 
-    cout << " ### Caching ###" << endl << endl;
+        // Rainbow Table computation
 
-    // Rainbow Table computation.
+        cout << "Caching algorithm into a rainbow table ... ";
 
-    cout << "Caching algorithm into a rainbow table ... ";
+        _ComputeRainbowTable();
 
-    _ComputeRainbowTable();
+        cout << "Done!" << endl;
 
-    cout << "Done!" << endl;
+        // Minimum solution lengths computation
 
-    // Minimum solution lengths computation.
+        cout << "Caching minimum solution lengths (may take a minute or two) ... ";
 
-    cout << "Caching minimum solution lengths (may take a minute or two) ... ";
+        _ComputeMinimumSolutionLengths();
 
-    _ComputeMinimumSolutionLengths();
+        cout << "Done!" << endl << endl;
 
-    cout << "Done!" << endl << endl;
+        // Prune tables computation
 
-    // Prune tables computation.
+        cout << " ### Prune Tables ###" << endl << endl;
 
-    cout << " ### Prune Tables ###" << endl << endl;
+        cout << "Computing prune table (all solutions) ";
 
-    cout << "Computing prune tables ";
+        if ((InternalStateInitialValue != 0x0000) || (InternalStateTargetValue != 0x3929))
+            cout << "(may take a bit longer than usual for non-standard intial/target values) ";
 
-    if ((InternalStateInitialValue != 0x0000) || (InternalStateTargetValue != 0x3929))
-        cout << "(may take a bit longer than usual for non-standard intial/target values) ";
+        cout << "... ";
 
-    cout << "... ";
+        if(_ComputePruneTables(false))
+            cout << "Done!" << endl;
+        else {
+            cout << "Error! Program will be closed." << endl << endl;
 
-    _ComputePruneTables(false);
-    _ComputePruneTables(true);
+            return FileErrorAllSolutionsCSV;
+        }
 
-    cout << "Done!" << endl << endl;
+        cout << "Computing prune table (safe solutions) ";
 
-    cout << "A listing of them has been saved inside \"" << FileNameAllSolutionsPruneTablesCSV << "\" and \"" << FileNameSafeSolutionsPruneTablesCSV << "\", respectively." << endl << endl;
+        if ((InternalStateInitialValue != 0x0000) || (InternalStateTargetValue != 0x3929))
+            cout << "(may take a bit longer than usual for non-standard intial/target values) ";
 
-    // Computation of all/safe minimum length solutions.
+        cout << "... ";
 
-    cout << " ### Minimum Length Solutions ###" << endl << endl;
+        if(_ComputePruneTables(true))
+            cout << "Done!" << endl << endl;
+        else {
+            cout << "Error! Program will be closed." << endl << endl;
 
-    cout << hex;
+            return FileErrorSafeSolutionsCSV;
+        }
 
-    cout << uppercase;
+        cout << "A listing of them has been saved inside \"" << FileNameAllSolutionsPruneTablesCSV << "\" and \"" << FileNameSafeSolutionsPruneTablesCSV << "\", respectively." << endl << endl;
 
-    cout << "Chosen starting point is 0x" << setw(4) << setfill('0') << InternalStateInitialValue;
+        // Computation of all/safe minimum length solutions
 
-    if (InternalStateInitialValue != 0x0000)
-        cout << " (game default is 0x0000)";
+        cout << " ### Minimum Length Solutions ###" << endl << endl;
 
-    cout << endl;
+        cout << hex;
 
-    cout << "Chosen target point is   0x" << setw(4) << setfill('0') << InternalStateTargetValue;
+        cout << uppercase;
 
-    if (InternalStateTargetValue != 0x3929)
-        cout << " (game default is 0x3929)";
+        cout << "Chosen starting point is 0x" << setw(4) << setfill('0') << InternalStateInitialValue;
 
-    cout << endl << endl;
+        if (InternalStateInitialValue != 0x0000)
+            cout << " (game default is 0x0000)";
 
-    cout << dec;
+        cout << endl;
 
-    if (MinimumSolutionLength[InternalStateInitialValue] == 1)
-        cout << "A solution of minimum length is " << MinimumSolutionLength[InternalStateInitialValue] << " input long, computing all the solutions of this length." << endl << endl;
-    else
-        cout << "A solution of minimum length is " << MinimumSolutionLength[InternalStateInitialValue] << " inputs long, computing all the solutions of this length." << endl << endl;
+        cout << "Chosen target point is   0x" << setw(4) << setfill('0') << InternalStateTargetValue;
 
-    cout << "Computing solutions ... ";
+        if (InternalStateTargetValue != 0x3929)
+            cout << " (game default is 0x3929)";
 
-    NumberOfAllSolutions = _ComputeSolutions(false);
-    NumberOfSafeSolutions = _ComputeSolutions(true);
+        cout << endl << endl;
 
-    cout << "Done!" << endl << endl;
+        cout << dec;
 
-    cout << "All:  " << setw(5) << setfill(' ') << NumberOfAllSolutions << " (" << (((double)(NumberOfSafeSolutions) / (double)(pow(7,MinimumSolutionLength[InternalStateInitialValue]))) * (double)(100)) << "% of all the possible button combinations of length " << MinimumSolutionLength[InternalStateInitialValue] << ")" << endl;
+        if (MinimumSolutionLength[InternalStateInitialValue] == 1)
+            cout << "A solution of minimum length is " << MinimumSolutionLength[InternalStateInitialValue] << " input long, computing all the solutions of this length." << endl << endl;
+        else
+            cout << "A solution of minimum length is " << MinimumSolutionLength[InternalStateInitialValue] << " inputs long, computing all the solutions of this length." << endl << endl;
 
-    cout << "Safe: " << setw(5) << setfill(' ') << NumberOfSafeSolutions << " (" << (((double)(NumberOfSafeSolutions) / (double)(NumberOfAllSolutions)) * (double)(100)) << "% of all the solutions of length " << MinimumSolutionLength[InternalStateInitialValue] << ")" << endl << endl;
+        cout << "Computing solutions (all solutions) ... ";
 
-    cout << "A listing of them has been saved inside \"" << FileNameAllSolutionsCSV << "\" and \"" << FileNameSafeSolutionsCSV << "\", respectively." << endl;
+        NumberOfAllSolutions = _ComputeSolutions(false);
 
-    // Memory deallocation.
+        if(NumberOfAllSolutions > -1)
+            cout << "Done!" << endl;
+        else {
+            cout << "Error! Program will be closed." << endl << endl;
 
-    _DeallocateAllThatNeedsToBeDeallocated();
+            return FileErrorAllSolutionsCSV;
+        }
+
+        cout << "Computing solutions (safe solutions) ... ";
+
+        NumberOfSafeSolutions = _ComputeSolutions(true);
+
+        if(NumberOfSafeSolutions > -1)
+            cout << "Done!" << endl << endl;
+        else {
+            cout << "Error! Program will be closed." << endl << endl;
+
+            return FileErrorSafeSolutionsCSV;
+        }
+
+        cout << "Done!" << endl << endl;
+
+        cout << "All:  " << setw(5) << setfill(' ') << NumberOfAllSolutions << " (" << (((double)(NumberOfSafeSolutions) / (double)(pow(7,MinimumSolutionLength[InternalStateInitialValue]))) * (double)(100)) << "% of all the possible button combinations of length " << MinimumSolutionLength[InternalStateInitialValue] << ")" << endl;
+
+        cout << "Safe: " << setw(5) << setfill(' ') << NumberOfSafeSolutions << " (" << (((double)(NumberOfSafeSolutions) / (double)(NumberOfAllSolutions)) * (double)(100)) << "% of all the solutions of length " << MinimumSolutionLength[InternalStateInitialValue] << ")" << endl << endl;
+
+        cout << "A listing of them has been saved inside \"" << FileNameAllSolutionsCSV << "\" and \"" << FileNameSafeSolutionsCSV << "\", respectively." << endl << endl;
+
+        // Memory deallocation
+
+        _DeallocateAllThatNeedsToBeDeallocated();
+    } else {
+        cout << "Memory allocation error! Program will be closed." << endl << endl;
+
+        return RainbowTableMemoryAllocationError;
+    }
 
     return 0;
 }

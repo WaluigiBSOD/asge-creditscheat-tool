@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file ComputeRainbowTable.cpp
+/// @file      ComputeRainbowTable.cpp
 ///
-/// @brief Functions for computing the algorithm's rainbow table.
+/// @brief     Functions for computing the algorithm's rainbow table.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
 #include "Constants.h"
 
@@ -31,7 +31,8 @@
 /// @param[in] StartingInternalState The algorithm's internal state to alter using *ButtonID*'s value.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 void _FillRainbowTable(unsigned short ButtonID, unsigned short StartingInternalState) {
     RainbowTable[ButtonID][StartingInternalState] = StartingInternalState ^ ButtonCodes[ButtonID];
 
@@ -48,9 +49,10 @@ void _FillRainbowTable(unsigned short ButtonID, unsigned short StartingInternalS
 /// It's done to avoid computing the same things over and over, and to speed up operations in general by caching them in RAM.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
+
 void _ComputeRainbowTable() {
-    unsigned int i;
+    unsigned char i;
     unsigned int j;
 
     for (i=0;i<7;i++)

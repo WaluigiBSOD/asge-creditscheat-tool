@@ -16,14 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-/// @file Constants.h
+/// @file      Constants.h
 ///
-/// @brief Constants.cpp's header file. It's used to import the program's constants inside every source file.
+/// @brief     Constants.cpp's header file. It's used to import the program's constants inside every source file.
 ///
 /// @author    WaluigiBSOD
-/// @copyright GPL-3.0 license
+/// @copyright GPL-3.0 License
 
-#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -37,9 +37,9 @@ extern const string ProgramVersion;
 
 // Splash Screen
 
-extern const unsigned int SplashScreenSpacingLeft;
+extern const unsigned char SplashScreenSpacingLeft;
 
-extern const unsigned int SplashScreenWidth;
+extern const unsigned char SplashScreenWidth;
 
 // Rainbow Tables
 
@@ -58,16 +58,26 @@ extern const string ButtonNames[7];
 extern const unsigned short InternalStateInitialValue;
 extern const unsigned short InternalStateTargetValue;
 
-// Compute Solutions
-
-extern const string FileNameAllSolutionsCSV;
-extern const string FileNameSafeSolutionsCSV;
-
 // Prune Tables
 
 extern const string FileNameAllSolutionsPruneTablesCSV;
 extern const string FileNameSafeSolutionsPruneTablesCSV;
 
+// Compute Solutions
+
+extern const string FileNameAllSolutionsCSV;
+extern const string FileNameSafeSolutionsCSV;
+
 // CSV Separator
 
 extern const char SeparatorCSV;
+
+// Exit Codes
+
+extern const char RainbowTableMemoryAllocationError;
+
+extern const char FileErrorAllSolutionsPruneTablesCSV;
+extern const char FileErrorSafeSolutionsPruneTablesCSV;
+
+extern const char FileErrorAllSolutionsCSV;
+extern const char FileErrorSafeSolutionsCSV;
