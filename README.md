@@ -4,9 +4,9 @@ A command-line tool that computes some stuff regarding [the Genesis Alien Storm 
 
 ## Program
 
-More documentation can be found [here](https://waluigibsod.github.io/asge-creditscheat-tool), generated with [Doxygen](https://github.com/doxygen/doxygen) from the source code and an additional file for the main page.
+More documentation can be found [here](https://waluigibsod.github.io/asge-creditscheat-tool/), generated with [Doxygen](https://github.com/doxygen/doxygen) from the source code and an additional file for the main page.
 
-### How To Compile It
+### How to Compile
 
 A handy [`CMakeLists.txt`](https://github.com/WaluigiBSOD/asge-creditscheat-tool/blob/master/src/CMakeLists.txt) file is provided inside the [`src`](https://github.com/WaluigiBSOD/asge-creditscheat-tool/tree/master/src) directory for easy compilation, overall the only particular requirement it needs is the ISO C++11 standard.
 
