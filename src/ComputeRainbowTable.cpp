@@ -25,7 +25,7 @@
 
 #include "Constants.h"
 
-/// This is the main logic behind the method for computing the algorithm's rainbow table.
+/// This is the main logic behind the procedure for computing the algorithm's rainbow table.
 ///
 /// @param[in] ButtonID              The Sega Genesis/Mega Drive button ID. Values are defined inside the *ButtonCodes* array, used also inside it, names inside *ButtonNames* instead.
 /// @param[in] StartingInternalState The algorithm's internal state to alter using *ButtonID*'s value.
@@ -44,7 +44,7 @@ void _FillRainbowTable(unsigned short ButtonID, unsigned short StartingInternalS
         RainbowTable[ButtonID][StartingInternalState] >>= 1;
 }
 
-/// This is the method for computing the algorithm's rainbow table.
+/// This is the procedure for computing the algorithm's rainbow table.
 ///
 /// It's done to avoid computing the same things over and over, and to speed up operations in general by caching them in RAM.
 ///

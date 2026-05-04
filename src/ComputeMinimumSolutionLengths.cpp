@@ -25,7 +25,7 @@
 
 #include "Constants.h"
 
-/// This is the main logic behind the method that computes all the minimum solution lengths.
+/// This is the main logic behind the procedure that computes all the minimum solution lengths.
 ///
 /// @param[in] InternalState       The starting internal state.
 /// @param[in] TargetInternalState The internal state to obtain by altering the *InternalState* variable, through button presses.
@@ -48,7 +48,7 @@ bool _FindMinimumSolutionLength(unsigned short InternalState, unsigned short Tar
     return false;
 }
 
-/// This method computes all the minimum solution lengths.
+/// This procedure computes all the minimum solution lengths.
 ///
 /// It's done in various steps iteratively with no lengthy recursive searches.
 ///

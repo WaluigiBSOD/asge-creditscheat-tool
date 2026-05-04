@@ -76,7 +76,7 @@ string _CenterString(string ToCenter = "", bool PrintBorder = true) {
     return retSTRING;
 }
 
-/// This method prints the splash screen at the very beginning of the program's execution.
+/// This procedure prints the splash screen at the very beginning of the program's execution.
 ///
 /// @author    WaluigiBSOD
 /// @copyright GPL-3.0 License
